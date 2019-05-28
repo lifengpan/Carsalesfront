@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^1.3.8",
+    "axios": "^0.18.0",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
@@ -35,7 +36,11 @@
       "plugin:vue/essential",
       "@vue/prettier"
     ],
-    "rules": {},
+    "rules": {
+      "prettier/prettier": "off",
+      "quotes": ["error", "single"],
+      "no-unused-vars": ["error", { "vars": "all", "args": "none", "ignoreRestSiblings": false }]
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     }

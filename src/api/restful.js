@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 export const AXIOS_HTTP = axios.create({
   timeout: 15000
@@ -9,13 +9,13 @@ class RESTAPI {
   }
   static $baseurl(url) {
     if (!url) {
-      throw new Error("请使用正确的url,当前传入的为：" + url || "未知参数");
+      throw new Error('请使用正确的url,当前传入的为：' + url || '未知参数');
     }
     AXIOS_HTTP.defaults.baseURL = url;
   }
   static $transformResponse(fun) {
-    if (!(typeof fun === "function")) {
-      throw new Error("请传入正确的fun, d当前传入的为" + fun || "未知参数");
+    if (!(typeof fun === 'function')) {
+      throw new Error('请传入正确的fun, d当前传入的为' + fun || '未知参数');
     }
     AXIOS_HTTP.defaults.transformResponse = fun;
   }
@@ -24,7 +24,7 @@ class RESTAPI {
     this.preConfig = Object.assign({}, this.preConfig, config);
     this.preConfig.url = this.url;
     if (config && config.query) {
-      this.preConfig.url = this.preConfig.url + "/" + config.query;
+      this.preConfig.url = this.preConfig.url + '/' + config.query;
     }
     // eslint-disable-next-line
     console.log(this.preConfig)
@@ -43,9 +43,9 @@ class RESTAPI {
     this.url = url;
   }
   async get(query, params) {
-    const method = "GET";
+    const method = 'GET';
     this.method = method;
-    query = query || "";
+    query = query || '';
     params = params || {};
     return await this.ajax({
       query,
@@ -54,7 +54,7 @@ class RESTAPI {
     });
   }
   async create(data) {
-    const method = "POST";
+    const method = 'POST';
     this.method = method;
     data = data || {};
     return await this.ajax({
@@ -63,9 +63,9 @@ class RESTAPI {
     });
   }
   async put(query, data) {
-    const method = "PUT";
+    const method = 'PUT';
     this.method = method;
-    query = query || "";
+    query = query || '';
     data = data || {};
     return await this.ajax({
       query,
@@ -74,7 +74,7 @@ class RESTAPI {
     });
   }
   async delete() {
-    const method = "DELETE";
+    const method = 'DELETE';
     this.method = method;
     return await this.ajax({
       method

@@ -1,18 +1,20 @@
 <template>
   <div id="Login">
+    <div class="Login-backgorund"></div>
     <div class="lifengpan">
-      <h2 class="h22">{{ islogin ? '欢迎登录ACM报名系统' : '欢迎注册ACM报名系统' }}</h2>
-      <hr>
       <a-spin tip="Loading..." :spinning="loading">
+        <h2 class="h22">{{ islogin ? 'Welcome' : 'Welcome' }}</h2>
+        <hr>
         <a-form
           id="components-form-demo-normal-login"
           :form="form"
           @submit="handleSubmit">
           <a-form-item class="user abc">
             <a-input
+              class="lfp-input"
               v-decorator="[
                 'userName',
-                {rules: [{required: true, pattern: /^[\w\d_]{6,30}$/i, message: '用户名由字母、数字或 _ 组成,长度6-30位', whitespace:true,}]}
+                {rules: [{required: true, pattern: /^[\w\d_]{6,30}$/i, message: '用户名由字母、数字或_组成长度6-30', whitespace:true,}]}
               ]"
               placeholder="Username"
             >
@@ -57,17 +59,17 @@
           </a-form-item>
           <a-form-item v-if="islogin">
             <a-button
-              type="primary"
               html-type="submit"
               class="login-form-button"
+              :ghost="true"
             >
               登录
             </a-button>
           </a-form-item>
           <a-form-item v-if="!islogin">
             <a-button
-              type="primary"
               html-type="submit"
+              :ghost="true"
               class="login-form-button">
               注册系统
             </a-button>
@@ -188,23 +190,44 @@ export default {
 .login-form-button {
   margin-top: 32px;
   width: 250px;
+  color: white;
   left: 0;
 }
 #Login {
-  background-image: url("https://file.iviewui.com/iview-admin/login_bg.jpg");
+  height: 100%;
+  width: 100%;
+}
+.Login-backgorund {
+  background-image: url("../assets/bejin3.jpg");
+  background-repeat: no-repeat;
   height: 100%;
   width: 100%;
   position: absolute;
   background-position: center;
+  background-size: cover;
+  filter: blur(3px);
 }
 .lifengpan {
   position: absolute;
-  background-color: white;
+  background: rgba(216, 216, 216, 0.3); 
   border-radius: 10px;
   width: 300px;
   top: 50%;
   transform: translateY(-60%);
-  right: 160px;
+  right: 40%;
+}
+p {
+  filter:alpha(opacity=60);
+  opacity:0.6;
+}
+.ant-input {
+  background-color: rgba(216, 216, 216, 0.3);
+  color: white;
+  background: rgba(216, 216, 216, 0.3)
+}
+.ant-btn {
+  background-color: #1890ff1a;
+  border-color: #1890ffa3;
 }
 .user {
   margin-top: 28px;
@@ -216,12 +239,14 @@ export default {
   position: relative;
   display: block;
 }
+
 .h22 {
   position: relative;
   margin-top: 20px;
   margin-bottom: 15px;
   text-decoration: none;
-  color: cornflowerblue;
+  font-size: 40px;
+  color: white;
 }
 .registered {
   color: cornflowerblue;
@@ -236,7 +261,7 @@ export default {
   color: cornflowerblue;
   position: relative;
   width: 150px;
-  left: 30%;
+  left: 26%;
   margin-top: 23px;
   cursor: pointer;
   margin-bottom: 15px;
