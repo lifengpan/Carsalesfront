@@ -77,7 +77,7 @@ export default {
       this.collapsed = !this.collapsed
     },
     jumpRouter () {
-      this.$router.push({name: "dishmenu"})
+      this.$router.push({name: 'dishmenu'})
     }
   }
 };

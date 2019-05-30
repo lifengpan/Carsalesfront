@@ -19,13 +19,15 @@ let routes = [
         path: 'User',
         name: 'DeskUser',
         component: resolve => require(['@/page/parent'], resolve),
-        children: [
-          {
-            path: 'dishmenu',
-            name: 'dishmenu',
-            component: resolve => require(['@/page/dishmenu'], resolve)
-          }
-        ]
+        children: [{
+          path: 'dishmenu',
+          name: 'dishmenu',
+          component: resolve => require(['@/page/dishmenu'], resolve)
+        }, {
+          path: 'test',
+          name: 'test',
+          component: resolve => require(['@/page/Flowchart'], resolve)
+        }]
       }
     ]
   }

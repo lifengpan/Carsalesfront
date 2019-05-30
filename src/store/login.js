@@ -10,17 +10,14 @@ export default {
   state: {},
   actions: {
     async [GET_DATA]() {
-      // eslint-disable-next-line
       console.log('store')
       const GETDATA_HTTP = new testRequest.GETDATA({
         username: '2240661275'
       })
       const info = await GETDATA_HTTP.get()
-      // eslint-disable-next-line
       console.log(info.data)
     },
     async [POST_DATA]() {
-      // eslint-disable-next-line
       console.log('store')
       const POSTDATA_HTTP = new testRequest.POSTDATA();
       await POSTDATA_HTTP.create({
@@ -44,10 +41,8 @@ export default {
       await DELETE_DATA_HTTP.delete();
     },
     async [LOGIN_IN]({ commit }, data) {
-      // eslint-disable-next-line
       console.log('jing')
       const LOGIN_IN_HTTP = new login.LOGIN_IN();
-      // eslint-disable-next-line
       console.log('jing')
       await LOGIN_IN_HTTP.create({
         username: data.username,
