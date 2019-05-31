@@ -29,7 +29,12 @@ class RESTAPI {
     // eslint-disable-next-line
     console.log(this.preConfig)
     // Object.assign(this.preConfig, this.config.transformRequest)
-    return (await AXIOS_HTTP(this.preConfig)).data;
+    try {
+      const info = (await AXIOS_HTTP(this.preConfig)).data;
+      return info
+    } catch (error) {
+      throw new Error(error)
+    }
   }
   matchURL(variable) {
     var q = /{([^}]+)}/g;

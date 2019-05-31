@@ -14,6 +14,12 @@
       >
         查看
       </a-button>
+      <span style="margin-left: 100px">桌号：</span>
+      <a-select v-model="tableNumber" style="width: 120px" @change="handleChanges">
+        <a-select-option value="1">1</a-select-option>
+        <a-select-option value="2">2</a-select-option>
+        <a-select-option value="3">3</a-select-option>
+      </a-select>
     </div>
     <a-table :pagination="pagination" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :columns="columns" :dataSource="data" @change="handleChange">
       <template slot="number" slot-scope="text, record">
@@ -33,12 +39,12 @@
         <span class="dialog-content-name">{{value.name}} * {{value.number}}</span><span class="dialog-content-price">{{value.price}}/份</span>
       </p>
     </div>
-    <a-button type="primary" class="dialog-footer-button">提交订单</a-button>
+    <a-button type="primary" class="dialog-footer-button" @click="createOrder">提交订单</a-button>
     </a-drawer>
   </div>
 </template>
 <script>
-import { USER_GET_DISH } from '@/store/user'
+import { USER_GET_DISH, CREATE_ORDER, ORDER_ADD_DISH } from '@/store/user'
 import { mapActions } from 'vuex'
 
 const data = [];
@@ -60,6 +66,7 @@ export default {
       tempData: [],
       loading: false,
       visible: false,
+      tableNumber: '',
       x: 5,
       filteredInfo: null,
       sortedInfo: null,
@@ -107,10 +114,13 @@ export default {
     }
   },
   methods: {
-    ...mapActions([USER_GET_DISH]),
+    ...mapActions([USER_GET_DISH, CREATE_ORDER, ORDER_ADD_DISH]),
     handleChange (pagination, filters, sorter) {
       this.filteredInfo = filters;
       this.sortedInfo = sorter;
+    },
+    handleChanges () {
+      console.log(this.tableNumber)
     },
     onChangelfp (value, key) {
       console.log(value)
@@ -154,7 +164,33 @@ export default {
           this.tempData[element.key] = element
         });
       } catch (e) {
-        this.$taost.error(e.message)
+        this.$message.error(e.message)
+      }
+    },
+    async createOrder () {
+      try {
+        const info = await this[CREATE_ORDER]({
+          username: '周润发',
+          tableNumber: this.tableNumber
+        })
+        this.orderAddDish(info.data.orderId)
+      } catch (e) {
+        console.log(e.message)
+        this.$message.error(e.message)
+      }
+    },
+    async orderAddDish (id) {
+      try {
+        let arrId = []
+        this.selectedRowKeys.forEach((element,index) => {
+          arrId[index] = this.tempData[element].dishesId
+        })
+        await this[ORDER_ADD_DISH]({
+          id: id,
+          dish: arrId,
+        })
+      } catch (e) {
+        this.$message.error(e.message)
       }
     }
   },

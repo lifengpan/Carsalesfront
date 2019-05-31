@@ -8,7 +8,8 @@ HttpWithAuth.$transformResponse(response => {
     throw new Error('服务端格式错误，已拦截');
   }
   let res = JSON.parse(response);
-  console.log(res)
+  console.log('sum')
+  console.log(res.success)
   if (!res.success && res.success !== undefined) {
     throw new Error(res.message);
   }

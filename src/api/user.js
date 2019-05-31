@@ -6,3 +6,17 @@ export class USERGETDISH extends HttpWithAuth {
   methods = 'GET'
   url = '/user/menuList'
 }
+
+export class CREATEORDER extends HttpWithAuth {
+  description = '用户__创建订单'
+  version = '1.0'
+  methods = 'POST'
+  url = '/user/createOrder'
+}
+
+export class ORDERADDDISH extends HttpWithAuth {
+  description = '用户__在订单中添加菜'
+  version = '1.0'
+  methods = 'PUT'
+  url = '/user/createOrder/{id}/addDish'
+}
