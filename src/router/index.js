@@ -22,7 +22,11 @@ let routes = [
         children: [{
           path: 'dishmenu',
           name: 'dishmenu',
-          component: resolve => require(['@/page/dishmenu'], resolve)
+          component: resolve => require(['@/page/user/dishmenu'], resolve)
+        }, {
+          path: 'orderList',
+          name: 'OrderList',
+          component: resolve => require(['@/page/user/OrderList'], resolve)
         }, {
           path: 'test',
           name: 'test',

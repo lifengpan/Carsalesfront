@@ -20,3 +20,10 @@ export class ORDERADDDISH extends HttpWithAuth {
   methods = 'PUT'
   url = '/user/createOrder/{id}/addDish'
 }
+
+export class ORDERLIST extends HttpWithAuth {
+  description = '用户__获取订单列表'
+  version = '1.0'
+  methods = 'GET'
+  url = '/user/orderList/{username}'
+}

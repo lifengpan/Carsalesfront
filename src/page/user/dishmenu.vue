@@ -134,6 +134,7 @@ export default {
       this.selectedRowKeys.forEach((element,index) => {
         this.alreadyDish[index] = this.tempData[element]
       })
+      console.log(this.alreadyDish)
       setTimeout(() => {
         this.loading = false;
       }, 1000);
@@ -181,13 +182,18 @@ export default {
     },
     async orderAddDish (id) {
       try {
-        let arrId = []
-        this.selectedRowKeys.forEach((element,index) => {
-          arrId[index] = this.tempData[element].dishesId
+        let dishList = []
+        this.alreadyDish.forEach((element,index) => {
+          console.log(element)
+          dishList.push({
+            id: element.dishesId,
+            number: element.number
+          })
         })
+        console.log(dishList)
         await this[ORDER_ADD_DISH]({
           id: id,
-          dish: arrId,
+          dish: dishList,
         })
       } catch (e) {
         this.$message.error(e.message)

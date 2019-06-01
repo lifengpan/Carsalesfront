@@ -17,6 +17,7 @@
         <span>Option 1</span>
       </a-menu-item>
       <a-menu-item key="2">
+        <router-link to="/DESK/User/orderList"></router-link>
         <a-icon type="desktop" />
         <span>Option 2</span>
       </a-menu-item>
