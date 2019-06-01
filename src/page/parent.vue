@@ -22,6 +22,7 @@
         <span>Option 2</span>
       </a-menu-item>
       <a-menu-item key="3">
+        <router-link to="/DESK/manager/dishList"></router-link>
         <a-icon type="inbox" />
         <span>Option 3</span>
       </a-menu-item>

@@ -32,6 +32,18 @@ let routes = [
           name: 'test',
           component: resolve => require(['@/page/Flowchart'], resolve)
         }]
+      },
+      {
+        path: 'manager',
+        name: 'Manager',
+        component: resolve => require(['@/page/parent'], resolve),
+        children: [
+          {
+            path: 'dishList',
+            name: 'DishList',
+            component: resolve => require(['@/page/manager/dishList'], resolve)
+          }
+        ]
       }
     ]
   }
