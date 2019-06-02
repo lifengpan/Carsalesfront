@@ -41,7 +41,12 @@ let routes = [
           {
             path: 'dishList',
             name: 'DishList',
-            component: resolve => require(['@/page/manager/dishList'], resolve)
+            component: resolve => require(['@/page/manager/DishList'], resolve)
+          },
+          {
+            path: 'userList',
+            name: 'UserList',
+            component: resolve => require(['@/page/manager/UserList'], resolve)
           }
         ]
       }

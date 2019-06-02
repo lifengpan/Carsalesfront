@@ -27,3 +27,24 @@ export class ADDDISH extends HttpWithAuth {
   methods = 'put'
   url = '/manager/addDishes'
 }
+
+export class USERLIST extends HttpWithAuth {
+  description = '管理员__获取用户列表'
+  version = '1.0'
+  methods = 'GET'
+  url = '/manager/get/userList'
+}
+
+export class EDITUSER extends HttpWithAuth {
+  description = '管理员__编辑用户信息'
+  version = '1.0'
+  methods = 'PUT'
+  url = '/manager/edit/{username}/Info'
+}
+
+export class DELETEUSER extends HttpWithAuth {
+  description = '管理员__删除用户'
+  version = '1.0'
+  methods = 'DELETE'
+  url = '/manager/delete/{username}'
+}
