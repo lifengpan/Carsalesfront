@@ -3,8 +3,10 @@ import { manager } from '@/api'
 export const MANAGER_MENU_LIST = 'MANAGER_MENU_LIST'
 export const EDIT_DISH = 'EDIT_DISH'
 export const DELETE_DISH = 'DELETE_DISH'
+export const ADD_DISH = 'ADD_DISH'
 
 const MANAGER_MENU_LIST_HTTP = new manager.MENULIST()
+const ADD_DISH_HTTP = new manager.ADDDISH()
 
 export default {
   state: {},
@@ -34,6 +36,16 @@ export default {
         id: data.id
       })
       await DELETE_DISH_HTTP.delete()
+    },
+    async [ADD_DISH] ({commit}, data) {
+      const info = await ADD_DISH_HTTP.put('',{
+        name: data.name,
+        price: data.price
+      })
+      return {
+        data: info.data,
+        prompt: info.prompt
+      }
     }
   }
 }

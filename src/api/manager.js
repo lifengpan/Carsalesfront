@@ -20,3 +20,10 @@ export class DELETEDISH extends HttpWithAuth {
   methods = 'DELETE'
   url = '/manager/delete/dish/{id}'
 }
+
+export class ADDDISH extends HttpWithAuth {
+  description = '管理员__添加菜'
+  version = '1.0'
+  methods = 'put'
+  url = '/manager/addDishes'
+}

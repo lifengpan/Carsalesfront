@@ -1,11 +1,27 @@
 <template>
   <div>
-    <a-button class="editable-add-btn" @click="handleAdd">Add</a-button>
-    <div class="components-input-demo-size">
-      <a-input addonBefore="菜名" placeholder="dish name" />
-      <a-input addonBefore="价格" placeholder="dish price" />
+    <a-button class="editable-add-btn" @click="addDish = !addDish">Add</a-button>
+    <a-form v-if="addDish" :form="form" @submit="confirm" class="components-input-demo-size">
+      <a-form-item class="input-dish-name">
+        <a-input
+          addonBefore="菜名"
+          placeholder="dish name"
+          v-decorator="[
+            'dishName',
+            {rules: [{ required: true, message: 'Please input your dish name!' }]}
+          ]"/>
+      </a-form-item>
+      <a-form-item>
+        <a-input
+          addonBefore="价格"
+          placeholder="dish price"
+          v-decorator="[
+            'dishPrice',
+            {rules: [{ required: true, message: 'Please input your dish price!' }]}
+          ]"/>
+      </a-form-item>
       <a-button @click="confirm">确认</a-button>
-    </div>
+    </a-form>
     <a-table :columns="columns" :dataSource="data" bordered :pagination="pagination">
       <template v-for="col in ['name', 'price']" :slot="col" slot-scope="text, record">
         <div :key="col">
@@ -43,7 +59,7 @@
   </div>
 </template>
 <script>
-import { MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH } from '@/store/manager'
+import { MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH, ADD_DISH } from '@/store/manager'
 import { mapActions } from 'vuex'
 
 const columns = [{
@@ -72,6 +88,8 @@ export default {
       data: [],
       tempData: [],
       columns,
+      addDish: false,
+      form: this.$form.createForm(this),
       pagination: {
 				pageSize: 5, // 默认每页显示数量
 				showSizeChanger: true, // 显示可改变每页数量
@@ -89,12 +107,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions([MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH]),
-    confirm () {
-      console.log('确认添加')
-    },
-    handleAdd () {
-      console.log('添加菜')
+    ...mapActions([MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH, ADD_DISH]),
+    async confirm () {
+      try {
+        this.form.validateFields((err) => {
+          if (err) return
+        })
+        let dishName = this.form.getFieldValue('dishName')
+        let dishPrice = this.form.getFieldValue('dishPrice')
+        await this[ADD_DISH]({
+          name: dishName,
+          price: dishPrice
+        })
+        this.addDish = false
+        this.$message.success('添加成功')
+        await this.init()
+      } catch (e) {
+        this.$message.error(e.message)
+      }
     },
     handleChange (value, key, column) {
       const newData = [...this.data]
@@ -170,6 +200,7 @@ export default {
           this.tempData[element.key] = element
         });
         this.cacheData = this.data.map(item => ({ ...item }))
+        this.$message.success('获取菜单成功')
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -190,5 +221,9 @@ export default {
 .ant-input-group-wrapper {
   width: 200px;
   margin: 0 14px 14px 0;
+}
+.components-input-demo-size {
+  display: flex;
+  flex-direction: row;
 }
 </style>
