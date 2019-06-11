@@ -21,18 +21,23 @@
         <a-icon type="desktop" />
         <span>Option 2</span>
       </a-menu-item>
-      <a-menu-item key="3">
-        <router-link to="/DESK/manager/dishList"></router-link>
-        <a-icon type="inbox" />
-        <span>Option 3</span>
-      </a-menu-item>
       <a-sub-menu key="sub1">
         <span slot="title"><a-icon type="mail" /><span>Navigation One</span></span>
+        <a-menu-item key="3">
+          <router-link to="/DESK/manager/dishList"></router-link>
+          <a-icon type="pie-chart" />
+          <span>Option 3</span>
+        </a-menu-item>
         <a-menu-item key="5">
           <router-link to="/DESK/manager/userList"></router-link>
-          Option 5
+          <a-icon type="solution" />
+          <span>Option 5</span>
         </a-menu-item>
-        <a-menu-item key="6">Option 6</a-menu-item>
+        <a-menu-item key="6">
+          <router-link to="/DESK/manager/manageOrder"></router-link>
+          <a-icon type="snippets" />
+          <span>Option 6</span>
+        </a-menu-item>
         <a-menu-item key="7">Option 7</a-menu-item>
         <a-menu-item key="8">Option 8</a-menu-item>
       </a-sub-menu>

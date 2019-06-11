@@ -164,6 +164,7 @@ export default {
         this.data.forEach(element => {
           this.tempData[element.key] = element
         });
+        this.$message.success('获取菜单成功')
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -174,7 +175,8 @@ export default {
           username: '周润发',
           tableNumber: this.tableNumber
         })
-        this.orderAddDish(info.data.orderId)
+        await this.orderAddDish(info.data.orderId)
+        this.$message.success('提交订单成功')
       } catch (e) {
         console.log(e.message)
         this.$message.error(e.message)

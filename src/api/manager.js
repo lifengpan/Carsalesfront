@@ -48,3 +48,31 @@ export class DELETEUSER extends HttpWithAuth {
   methods = 'DELETE'
   url = '/manager/delete/{username}'
 }
+
+export class ALLORDERLIST extends HttpWithAuth {
+  description = '管理员__获取所有订单列表'
+  version = '1.0'
+  methods = 'GET'
+  url = '/manager/allorderList'
+}
+
+export class ORDERDETAILS extends HttpWithAuth {
+  description = '管理员_获取订单详情'
+  version = '1.0'
+  methods = 'GET'
+  url = '/manager/{id}/orderDetails'
+}
+
+export class EDITORDER extends HttpWithAuth {
+  description = '管理员__编辑订单信息'
+  version = '1.0'
+  methods = 'PUT'
+  url = '/manager/edit/{id}/orderInfo'
+}
+
+export class DELETEORDER extends HttpWithAuth {
+  description = '管理员__删除订单'
+  version = '1.0'
+  methods = 'DELETE'
+  url = '/manager/delete/{id}/order'
+}

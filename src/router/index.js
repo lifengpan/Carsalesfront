@@ -47,6 +47,16 @@ let routes = [
             path: 'userList',
             name: 'UserList',
             component: resolve => require(['@/page/manager/UserList'], resolve)
+          },
+          {
+            path: 'manageOrder',
+            name: 'ManageOrder',
+            component: resolve => require(['@/page/manager/ManageOrder'], resolve)
+          },
+          {
+            path: 'orderDetails',
+            name: 'OrderDetails',
+            component: resolve => require(['@/page/manager/OrderDetails'], resolve)
           }
         ]
       }

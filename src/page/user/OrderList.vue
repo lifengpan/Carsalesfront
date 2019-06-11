@@ -4,7 +4,7 @@
     <hr>
     <a-spin tip="Waiting..." :spinning="waithing">
       <div class="card-container">
-        <div style="background:#ECECEC; padding:30px;"  class="card">
+        <div style="background: rgba(219, 219, 219, 0.28); padding:30px;"  class="card">
           <a-card :title="order.createTime || '无'" :bordered="false" class="card1" v-for="(order, key) of orderList" :key="key">
             <div class="dish-list">
               <p v-if="order.dishDetails && order.dishDetails.length<=0" style="text-align: center; font-size: 18px; font-weight: 500;">无数据</p>
@@ -53,6 +53,7 @@ export default {
           username: '周润发'
         })
         this.orderList = info.data
+        this.$message.success('获取历史订单成功')
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -83,6 +84,7 @@ export default {
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
   padding-top: 0;
+  padding-left: 0;
 }
 .total-price {
   width: 10%;
@@ -104,12 +106,14 @@ export default {
 }
 .ant-card-wider-padding .ant-card-body {
   padding-top: 0;
+  padding-left: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
 }
 .ant-card-body {
   padding-top: 0;
+  padding-left: 0;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -124,5 +128,6 @@ export default {
 }
 .dish-list span {
   margin-right: 30%;
+  margin-left: 5%;
 }
 </style>
