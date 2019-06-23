@@ -8,8 +8,6 @@ HttpWithAuth.$transformResponse(response => {
     throw new Error('服务端格式错误，已拦截');
   }
   let res = JSON.parse(response);
-  console.log('sum')
-  console.log(res.success)
   if (!res.success && res.success !== undefined) {
     throw new Error(res.message);
   }
@@ -22,8 +20,6 @@ HttpWithAuth.$transformResponse(response => {
     query: res.query || {},
     prompt: res.prompt || {}
   };
-  console.log('返回数据')
-  // console.log(data)
   return response;
 });
 export { HttpWithAuth };

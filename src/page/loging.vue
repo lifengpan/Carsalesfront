@@ -14,7 +14,7 @@
               class="lfp-input"
               v-decorator="[
                 'userName',
-                {rules: [{required: true, pattern: /^[\w\d_]{6,30}$/i, message: '用户名由字母、数字或_组成长度6-30', whitespace:true,}]}
+                {rules: [{required: true, pattern: /^[\w\d_]{5,30}$/i, message: '用户名由字母、数字或_组成长度6-30', whitespace:true,}]}
               ]"
               placeholder="Username"
             >
@@ -88,8 +88,8 @@
 
 <script>
 // import { mapState } from "vuex";
-import { mapActions } from "vuex";
-import { LOGIN_IN, REGISTER } from "../store/login";
+import { mapActions } from 'vuex';
+import { LOGIN_IN, REGISTER } from '../store/login';
 
 export default {
   beforeCreate() {
@@ -98,12 +98,12 @@ export default {
   data() {
     return {
       user: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       },
       islogin: true,
       loading: false,
-      repassword: ""
+      repassword: ''
     };
   },
   // computed: {
@@ -114,8 +114,8 @@ export default {
   methods: {
     ...mapActions([LOGIN_IN, REGISTER]),
     validateUserrepassword(rule, value, callback) {
-      if (value !== this.form.getFieldValue("password")) {
-        callback(new Error("两次密码不一致,请重新输入"));
+      if (value !== this.form.getFieldValue('password')) {
+        callback(new Error('两次密码不一致,请重新输入'));
       } else {
         callback();
       }
@@ -125,10 +125,11 @@ export default {
     },
     async login() {
       try {
-        this.$message.success("正在登陆系统中");
+        this.$message.success('正在登陆系统中');
         this.loading = true;
         await this[LOGIN_IN](this.user);
-        this.$message.success("登陆成功");
+        this.$router.push({name: 'dishmenu'})
+        this.$message.success('登陆成功');
         // setTimeout(() => {
         //   console.log(this.auth.Code)
         //   this.$router.replace({ path: !this.auth.Code ? '/Desk/User/Info' : '/Desk/User/Race' })
@@ -143,14 +144,14 @@ export default {
     },
     async register() {
       if (this.repassword !== this.user.password) {
-        this.$message.error("两次密码不一致，请重新输入");
+        this.$message.error('两次密码不一致，请重新输入');
         return;
       }
       try {
         this.loading = true;
-        this.$message.success("正在注册账号中");
+        this.$message.success('正在注册账号中');
         await this[REGISTER](this.user);
-        this.$message.success("注册成功");
+        this.$message.success('注册成功');
         setTimeout(() => {
           this.loading = false;
           this.islogin = !this.islogin;
@@ -164,9 +165,9 @@ export default {
       }
     },
     handleSubmit(e) {
-      this.user.username = this.form.getFieldValue("userName");
-      this.user.password = this.form.getFieldValue("password");
-      this.repassword = this.form.getFieldValue("repassword");
+      this.user.username = this.form.getFieldValue('userName');
+      this.user.password = this.form.getFieldValue('password');
+      this.repassword = this.form.getFieldValue('repassword');
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (err) return;
@@ -182,7 +183,7 @@ export default {
   }
 };
 </script>
-<style>
+<style scoped>
 #components-form-demo-normal-login {
   margin-top: 20px;
   width: 300px;
@@ -221,7 +222,7 @@ p {
   opacity:0.6;
 }
 .ant-input {
-  background-color: rgba(216, 216, 216, 0.3);
+  background-color: #fff0;
   color: white;
   background: rgba(216, 216, 216, 0.3)
 }

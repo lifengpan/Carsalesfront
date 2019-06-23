@@ -6,8 +6,25 @@ export const PUT_DATA = 'PUT_DATA'
 export const DELETE_DATA = 'DELETE_DATA'
 export const LOGIN_IN = 'LOGIN_IN'
 export const REGISTER = 'REGISTER'
+export const AUTH_TOKEN = 'AUTH_TOKEN'
 export default {
-  state: {},
+  state: {
+    auth: {}
+  },
+  mutations: {
+    [LOGIN_IN] (state, data) {
+      console.log('hebing')
+      Object.assign(state.auth, data)
+      console.log(state)
+    }
+  },
+  getters: {
+    [AUTH_TOKEN]: (state) => {
+      console.log('statestate')
+      console.log(state)
+      return state
+    }
+  },
   actions: {
     async [GET_DATA]() {
       console.log('store')
@@ -41,13 +58,16 @@ export default {
       await DELETE_DATA_HTTP.delete();
     },
     async [LOGIN_IN]({ commit }, data) {
-      console.log('jing')
       const LOGIN_IN_HTTP = new login.LOGIN_IN();
-      console.log('jing')
-      await LOGIN_IN_HTTP.create({
+      const info = await LOGIN_IN_HTTP.create({
         username: data.username,
         password: data.password
       })
+      let temp = {
+        token: info.data.token
+      }
+      sessionStorage.setItem('token', info.data.token)
+      commit(LOGIN_IN, temp)
     },
     async [REGISTER]({ commit }, data) {
       const LOGIN_IN_HTTP = new login.REGISTER();

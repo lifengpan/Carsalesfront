@@ -50,7 +50,7 @@ export default {
     async getOrderList () {
       try {
         const info = await this[USER_ORDER_LIST]({
-          username: '周润发'
+          username: 'lifengpan'
         })
         this.orderList = info.data
         this.$message.success('获取历史订单成功')
@@ -85,6 +85,7 @@ export default {
   border-bottom: 1px solid #eee;
   padding-top: 0;
   padding-left: 0;
+  color: black;
 }
 .total-price {
   width: 10%;

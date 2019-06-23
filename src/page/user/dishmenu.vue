@@ -172,11 +172,11 @@ export default {
     async createOrder () {
       try {
         const info = await this[CREATE_ORDER]({
-          username: '周润发',
           tableNumber: this.tableNumber
         })
         await this.orderAddDish(info.data.orderId)
         this.$message.success('提交订单成功')
+        //this.$router.push({name: 'OrderList'})
       } catch (e) {
         console.log(e.message)
         this.$message.error(e.message)
@@ -208,7 +208,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .dialog-title-dish {
     margin-left: 15px;
     font-size: 18px;

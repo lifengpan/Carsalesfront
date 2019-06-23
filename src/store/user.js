@@ -13,15 +13,14 @@ export default {
   actions: {
     async [USER_GET_DISH] ({commit}, data) {
       const info = await USER_GET_DISH_HTTP.get()
-      console.log(info)
       return {
         data: info.data,
         prompt: info.prompt
       }
     },
-    async [CREATE_ORDER] ({commit}, data) {
+    async [CREATE_ORDER] ({state, commit}, data) {
       const info = await CREATE_ORDER_HTTP.create({
-        username: data.username,
+        username: 'lifengpan',
         tableNumber: data.tableNumber
       })
       return {

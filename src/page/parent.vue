@@ -14,41 +14,30 @@
       <a-menu-item key="1">
         <router-link to="/DESK/User/dishmenu"></router-link>
         <a-icon type="pie-chart" />
-        <span>Option 1</span>
+        <span>菜单</span>
       </a-menu-item>
       <a-menu-item key="2">
         <router-link to="/DESK/User/orderList"></router-link>
         <a-icon type="desktop" />
-        <span>Option 2</span>
+        <span>历史订单</span>
       </a-menu-item>
       <a-sub-menu key="sub1">
-        <span slot="title"><a-icon type="mail" /><span>Navigation One</span></span>
+        <span slot="title"><a-icon type="mail" /><span>管理员</span></span>
         <a-menu-item key="3">
           <router-link to="/DESK/manager/dishList"></router-link>
           <a-icon type="pie-chart" />
-          <span>Option 3</span>
+          <span>菜单管理</span>
         </a-menu-item>
         <a-menu-item key="5">
           <router-link to="/DESK/manager/userList"></router-link>
           <a-icon type="solution" />
-          <span>Option 5</span>
+          <span>用户管理</span>
         </a-menu-item>
         <a-menu-item key="6">
           <router-link to="/DESK/manager/manageOrder"></router-link>
           <a-icon type="snippets" />
-          <span>Option 6</span>
+          <span>订单管理</span>
         </a-menu-item>
-        <a-menu-item key="7">Option 7</a-menu-item>
-        <a-menu-item key="8">Option 8</a-menu-item>
-      </a-sub-menu>
-      <a-sub-menu key="sub2">
-        <span slot="title"><a-icon type="appstore" /><span>Navigation Two</span></span>
-        <a-menu-item key="9">Option 9</a-menu-item>
-        <a-menu-item key="10">Option 10</a-menu-item>
-        <a-sub-menu key="sub3" title="Submenu">
-          <a-menu-item key="11">Option 11</a-menu-item>
-          <a-menu-item key="12">Option 12</a-menu-item>
-        </a-sub-menu>
       </a-sub-menu>
     </a-menu>
     </a-layout-sider>
@@ -58,7 +47,7 @@
           class="trigger"
           :type="hiddensider"
           @click="flipcollapsed"/>
-        <span></span>
+        <span>点餐系统</span>
         <span class="safetyExit"><a>安全退出</a></span>
       </a-layout-header>
       <div class="line"></div>

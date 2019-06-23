@@ -27,11 +27,15 @@ class RESTAPI {
       this.preConfig.url = this.preConfig.url + '/' + config.query;
     }
     // eslint-disable-next-line
-    console.log(this.preConfig)
+    // console.log(this.preConfig)
     // Object.assign(this.preConfig, this.config.transformRequest)
+    // this.preConfig.headers = {
+    //   'Authorization': 'woshiqianming'
+    // }
+    // this.preConfig.headers.Authorization = 'woshinibab'
     try {
-      const info = (await AXIOS_HTTP(this.preConfig)).data;
-      return info
+      const info = (await AXIOS_HTTP(this.preConfig));
+      return info.data
     } catch (error) {
       throw new Error(error)
     }
