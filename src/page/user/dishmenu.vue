@@ -1,42 +1,34 @@
 <template>
   <div>
     <div style="margin-bottom: 16px">
-      <span style="margin-left: 8px">
-        <template v-if="hasSelected">
-          {{`已点 ${selectedRowKeys.length} 个菜`}}
-        </template>
-      </span>
       <a-button
         type="primary"
         @click="start"
         :disabled="!hasSelected"
         :loading="loading"
       >
-        查看
+        查看已选车辆
       </a-button>
-      <span style="margin-left: 100px">桌号：</span>
-      <a-select v-model="tableNumber" style="width: 120px" @change="handleChanges">
-        <a-select-option value="1">1</a-select-option>
-        <a-select-option value="2">2</a-select-option>
-        <a-select-option value="3">3</a-select-option>
-      </a-select>
     </div>
     <a-table :pagination="pagination" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :columns="columns" :dataSource="data" @change="handleChange">
       <template slot="number" slot-scope="text, record">
         <a-input-number :min="0" :max="10" v-model="record.number" @change="onChangelfp(text, record.key)" />
       </template>
+      <template slot="details" slot-scope="text, record">
+        <a @click="details(record)">详情</a>
+      </template>
     </a-table>
     <a-drawer
-      title="已点菜单"
+      title="已选车辆"
       placement="right"
       :closable="false"
       @close="onClose"
       :visible="visible"
     >
     <div class="dialong-content">
-      <span class="dialog-title-dish">菜名</span><span class="dialog-title-price">价格</span>
+      <span class="dialog-title-dish">车型</span><span class="dialog-title-price">价格</span>
       <p v-for="(value,key) in alreadyDish" :key="key">
-        <span class="dialog-content-name">{{value.name}} * {{value.number}}</span><span class="dialog-content-price">{{value.price}}/份</span>
+        <span class="dialog-content-name">{{value.carName}} * {{value.number}}</span><span class="dialog-content-price">{{value.price}}(万元)</span>
       </p>
     </div>
     <a-button type="primary" class="dialog-footer-button" @click="createOrder">提交订单</a-button>
@@ -66,12 +58,11 @@ export default {
       tempData: [],
       loading: false,
       visible: false,
-      tableNumber: '',
       x: 5,
       filteredInfo: null,
       sortedInfo: null,
       pagination: {
-				pageSize: 20, // 默认每页显示数量
+				pageSize: 5, // 默认每页显示数量
 				showSizeChanger: true, // 显示可改变每页数量
 				pageSizeOptions: ['5', '10', '20', '30'], // 每页数量选项
 				showTotal: total => `Total ${total} items`, // 显示总数
@@ -88,27 +79,73 @@ export default {
       sortedInfo = sortedInfo || {};
       filteredInfo = filteredInfo || {};
       const columns = [{
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
+        title: '品牌',
+        dataIndex: 'carBrand',
+        key: 'carBrand',
+        filters: [
+          { text: '大众', value: '大众' },
+          { text: 'Jim', value: 'Jim' },
+        ],
+        filteredValue: filteredInfo.carBrand || null,
+        onFilter: (value, record) => record.carBrand.includes(value),
+        sorter: (a, b) => a.carBrand.length - b.carBrand.length,
+        sortOrder: sortedInfo.columnKey === 'carBrand' && sortedInfo.order,
+      }, {
+        title: '名称',
+        dataIndex: 'carName',
+        key: 'carName',
         filters: [
           { text: 'Joe', value: 'Joe' },
           { text: 'Jim', value: 'Jim' },
         ],
-        filteredValue: filteredInfo.name || null,
-        onFilter: (value, record) => record.name.includes(value),
-        sorter: (a, b) => a.name.length - b.name.length,
-        sortOrder: sortedInfo.columnKey === 'name' && sortedInfo.order,
+        filteredValue: filteredInfo.carName || null,
+        onFilter: (value, record) => record.carName.includes(value),
+        sorter: (a, b) => a.carName.length - b.carName.length,
+        sortOrder: sortedInfo.columnKey === 'carName' && sortedInfo.order,
       }, {
-        title: 'Price',
+        title: '能源',
+        dataIndex: 'energy',
+        key: 'energy',
+        filters: [
+          { text: 'Joe', value: 'Joe' },
+          { text: 'Jim', value: 'Jim' },
+        ],
+        filteredValue: filteredInfo.energy || null,
+        onFilter: (value, record) => record.energy.includes(value),
+        sorter: (a, b) => a.energy.length - b.energy.length,
+        sortOrder: sortedInfo.columnKey === 'energy' && sortedInfo.order,
+      }, {
+        title: '排量(L)',
+        dataIndex: 'displacement',
+        key: 'displacement',
+        filters: [
+          { text: 'Joe', value: 'Joe' },
+          { text: 'Jim', value: 'Jim' },
+        ],
+        filteredValue: filteredInfo.displacement || null,
+        onFilter: (value, record) => record.displacement.includes(value),
+        sorter: (a, b) => a.displacement.length - b.displacement.length,
+        sortOrder: sortedInfo.columnKey === 'displacement' && sortedInfo.order,
+      }, {
+        title: '库存(辆)',
+        dataIndex: 'stock',
+        key: 'stock',
+        sorter: (a, b) => parseInt(a.stock) > parseInt(b.stock),
+        sortOrder: sortedInfo.columnKey === 'stock' && sortedInfo.order,
+      }, {
+        title: '数量',
+        dataIndex: 'number',
+        scopedSlots: { customRender: 'number' },
+      }, {
+        title: '详情',
+        dataIndex: 'details',
+        scopedSlots: { customRender: 'details' },
+      }, {
+        title: '价格(万元)',
         dataIndex: 'price',
         key: 'price',
         sorter: (a, b) => a.price - b.price,
         sortOrder: sortedInfo.columnKey === 'price' && sortedInfo.order,
-      }, {
-        title: 'Number',
-        dataIndex: 'number',
-        scopedSlots: { customRender: 'number' },
       }];
       return columns;
     }
@@ -119,13 +156,18 @@ export default {
       this.filteredInfo = filters;
       this.sortedInfo = sorter;
     },
-    handleChanges () {
-      console.log(this.tableNumber)
-    },
     onChangelfp (value, key) {
       console.log(value)
       console.log(key)
       console.log(this.data)
+    },
+    details (record) {
+      console.log(record)
+      this.$router.push({name: 'carDetails',
+        query: {
+          carId: record.carId
+        }
+      })
     },
     start () {
       this.visible = true;
@@ -164,40 +206,28 @@ export default {
         this.data.forEach(element => {
           this.tempData[element.key] = element
         });
-        this.$message.success('获取菜单成功')
+        this.$message.success('获取商品成功')
       } catch (e) {
         this.$message.error(e.message)
       }
     },
     async createOrder () {
       try {
-        const info = await this[CREATE_ORDER]({
-          tableNumber: this.tableNumber
-        })
-        await this.orderAddDish(info.data.orderId)
-        this.$message.success('提交订单成功')
-        //this.$router.push({name: 'OrderList'})
-      } catch (e) {
-        console.log(e.message)
-        this.$message.error(e.message)
-      }
-    },
-    async orderAddDish (id) {
-      try {
         let dishList = []
         this.alreadyDish.forEach((element,index) => {
-          console.log(element)
           dishList.push({
-            id: element.dishesId,
+            id: element.commodityId,
             number: element.number
           })
         })
         console.log(dishList)
-        await this[ORDER_ADD_DISH]({
-          id: id,
-          dish: dishList,
+        await this[CREATE_ORDER]({
+          dishList: dishList
         })
+        this.$message.success('提交订单成功')
+        //this.$router.push({name: 'OrderList'})
       } catch (e) {
+        console.log(e.message)
         this.$message.error(e.message)
       }
     }

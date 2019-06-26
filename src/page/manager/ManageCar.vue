@@ -1,46 +1,8 @@
 <template>
   <div>
-    <a-button class="editable-add-btn" @click="addDish = !addDish">Add</a-button>
-    <a-form v-if="addDish" :form="form" @submit="confirm" class="components-input-demo-size">
-      <a-form-item class="input-car-name">
-        <a-select
-          showSearch
-          placeholder="选择汽车"
-          optionFilterProp="children"
-          style="width: 200px"
-          @focus="handleFocus"
-          @blur="handleBlur"
-          @change="selectChange"
-          :filterOption="filterOption"
-          v-decorator="[
-            'selectcar',
-            {rules: [{ required: true, message: 'Please select your car!' }]}
-          ]"
-        >
-          <a-select-option v-for="(car,index) in carList" :key="index" :value="car.carId">{{car.carName}}</a-select-option>
-        </a-select>
-      </a-form-item>
-      <a-form-item class="input-car-name">
-        <a-input
-          placeholder="请输入价格"
-          v-decorator="[
-            'dishPrice',
-            {rules: [{ required: true, message: 'Please input your price!' }]}
-          ]"/>
-      </a-form-item>
-      <a-form-item class="input-car-name">
-        <a-input
-          placeholder="请输入库存"
-          v-decorator="[
-            'stock',
-            {rules: [{ required: true, message: 'Please input your stock!' }]}
-          ]"
-          type="number"/>
-      </a-form-item>
-      <a-button @click="confirm" style="margin-top: 2px;">确认</a-button>
-    </a-form>
+    <a-button class="editable-add-btn" @click="createCar">Add</a-button>
     <a-table :columns="columns" :dataSource="data" bordered :pagination="pagination" @change="handleChanges">
-      <template v-for="col in ['carBrand', 'carName', 'energy', 'displacement', 'stock', 'price']" :slot="col" slot-scope="text, record">
+      <template v-for="col in ['carBrand', 'carName', 'energy', 'displacement']" :slot="col" slot-scope="text, record">
         <div :key="col">
           <a-input
             v-if="record.editable"
@@ -77,7 +39,7 @@
   </div>
 </template>
 <script>
-import { MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH, ADD_DISH, ALL_CAR } from '@/store/manager'
+import { EDIT_CAR, DELETE_CAR, ALL_CAR } from '@/store/manager'
 import { mapActions } from 'vuex'
 
 export default {
@@ -85,7 +47,6 @@ export default {
     return {
       data: [],
       tempData: [],
-      carList: [],
       addDish: false,
       form: this.$form.createForm(this),
       filteredInfo: null,
@@ -162,20 +123,6 @@ export default {
         sortOrder: sortedInfo.columnKey === 'displacement' && sortedInfo.order,
         scopedSlots: { customRender: 'displacement' },
       }, {
-        title: '库存(辆)',
-        dataIndex: 'stock',
-        key: 'stock',
-        sorter: (a, b) => parseInt(a.stock) > parseInt(b.stock),
-        sortOrder: sortedInfo.columnKey === 'stock' && sortedInfo.order,
-        scopedSlots: { customRender: 'stock' },
-      }, {
-        title: '价格(万元)',
-        dataIndex: 'price',
-        key: 'price',
-        sorter: (a, b) => a.price - b.price,
-        sortOrder: sortedInfo.columnKey === 'price' && sortedInfo.order,
-        scopedSlots: { customRender: 'price' },
-      }, {
         title: '详情',
         dataIndex: 'details',
         width: '10%',
@@ -193,45 +140,27 @@ export default {
     }
   },
   methods: {
-    ...mapActions([MANAGER_MENU_LIST, EDIT_DISH, DELETE_DISH, ADD_DISH, ALL_CAR]),
-    selectChange (value) {
-      console.log(`selected ${value}`);
-    },
-    handleBlur() {
-      console.log('blur');
-    },
-    handleFocus() {
-      console.log('focus');
-    },
+    ...mapActions([EDIT_CAR, DELETE_CAR, ALL_CAR]),
     filterOption(input, option) {
       return option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+    },
+    createCar () {
+      this.$router.push({name: 'ManageCarDetails',
+        query: {
+          create: true
+        }
+      })
     },
     handleChanges (pagination, filters, sorter) {
       this.filteredInfo = filters;
       this.sortedInfo = sorter;
     },
-    async confirm () {
-      try {
-        this.form.validateFields((err) => {
-          if (err) return
-        })
-        let carId = this.form.getFieldValue('selectcar')
-        let carPrice = this.form.getFieldValue('dishPrice')
-        let stock = this.form.getFieldValue('stock')
-        await this[ADD_DISH]({
-          carId: carId,
-          price: carPrice,
-          stock: stock
-        })
-        this.addDish = false
-        this.$message.success('添加成功')
-        await this.init()
-      } catch (e) {
-        this.$message.error(e.message)
-      }
-    },
     manageCarDetails(record) {
-      console.log(record)
+      this.$router.push({name: 'ManageCarDetails',
+        query: {
+          carId: record.carId
+        }
+      })
     },
     handleChange (value, key, column) {
       const newData = [...this.data]
@@ -256,15 +185,7 @@ export default {
       console.log(key)
       try {
         let temp = this.tempData[key]
-        await this[EDIT_DISH]({
-          id: temp.commodityId,
-          carBrand: temp.carBrand,
-          carName: temp.carName,
-          energy: temp.energy,
-          displacement: temp.displacement,
-          stock: temp.stock,
-          price: temp.price
-        })
+        await this[EDIT_CAR](temp)
         const newData = [...this.data]
         const target = newData.filter(item => key === item.key)[0]
         if (target) {
@@ -279,8 +200,8 @@ export default {
     },
     async onDelete (key) {
       try {
-        await this[DELETE_DISH]({
-          id: this.tempData[key].commodityId
+        await this[DELETE_CAR]({
+          id: this.tempData[key].carId
         })
         const data = [...this.data]
         this.data = data.filter(item => item.key !== key)
@@ -307,22 +228,13 @@ export default {
     },
     async init () {
       try {
-        const info = await this[MANAGER_MENU_LIST]()
+        const info = await this[ALL_CAR]()
         this.data = this.adjustData(info.data) || []
         this.data.forEach(element => {
           this.tempData[element.key] = element
         });
         this.cacheData = this.data.map(item => ({ ...item }))
-        this.$message.success('获取商品列表成功')
-        await this.getCarList()
-      } catch (e) {
-        this.$message.error(e.message)
-      }
-    },
-    async getCarList () {
-      try {
-        const info = await this[ALL_CAR]()
-        this.carList = Object.assign({}, this.carList, info.data)
+        this.$message.success('获取汽车列表成功')
       } catch (e) {
         this.$message.error(e.message)
       }

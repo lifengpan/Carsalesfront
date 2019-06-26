@@ -14,19 +14,24 @@
       <a-menu-item key="1">
         <router-link to="/DESK/User/dishmenu"></router-link>
         <a-icon type="pie-chart" />
-        <span>菜单</span>
+        <span>商品</span>
       </a-menu-item>
       <a-menu-item key="2">
         <router-link to="/DESK/User/orderList"></router-link>
         <a-icon type="desktop" />
-        <span>历史订单</span>
+        <span>订单</span>
       </a-menu-item>
-      <a-sub-menu key="sub1">
+      <a-menu-item key="3">
+        <router-link to="/DESK/user/userInfo"></router-link>
+        <a-icon type="desktop" />
+        <span>个人信息</span>
+      </a-menu-item>
+      <a-sub-menu key="sub1" v-if="isManage">
         <span slot="title"><a-icon type="mail" /><span>管理员</span></span>
-        <a-menu-item key="3">
+        <a-menu-item key="4">
           <router-link to="/DESK/manager/dishList"></router-link>
           <a-icon type="pie-chart" />
-          <span>菜单管理</span>
+          <span>商品管理</span>
         </a-menu-item>
         <a-menu-item key="5">
           <router-link to="/DESK/manager/userList"></router-link>
@@ -38,6 +43,11 @@
           <a-icon type="snippets" />
           <span>订单管理</span>
         </a-menu-item>
+        <a-menu-item key="7">
+          <router-link to="/DESK/manager/manageCar"></router-link>
+          <a-icon type="snippets" />
+          <span>汽车管理</span>
+        </a-menu-item>
       </a-sub-menu>
     </a-menu>
     </a-layout-sider>
@@ -47,8 +57,8 @@
           class="trigger"
           :type="hiddensider"
           @click="flipcollapsed"/>
-        <span>点餐系统</span>
-        <span class="safetyExit"><a>安全退出</a></span>
+        <span>汽车4s销售系统</span>
+        <span class="safetyExit" @click="safetyExit"><a>安全退出</a></span>
       </a-layout-header>
       <div class="line"></div>
       <a-layout-content>
@@ -63,7 +73,8 @@
 export default {
   data() {
     return {
-      collapsed: false
+      collapsed: false,
+      isManage: parseInt(localStorage.getItem('isManage'))
     }
   },
   computed: {
@@ -77,6 +88,18 @@ export default {
     },
     jumpRouter () {
       this.$router.push({name: 'dishmenu'})
+    },
+    safetyExit () {
+      localStorage.clear();
+      this.$store.replaceState({
+        Test: {
+          auth: {}
+        },
+        User: {},
+        Manager: {},
+      }); 
+      console.log(this.$store)
+      this.$router.push({name: 'lfpRestaurant'})
     }
   }
 };

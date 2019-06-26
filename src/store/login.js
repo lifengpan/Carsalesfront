@@ -19,10 +19,12 @@ export default {
     }
   },
   getters: {
-    [AUTH_TOKEN]: (state) => {
-      console.log('statestate')
-      console.log(state)
-      return state
+    AUTH_TOKEN: (state) => {
+      console.log('aaa')
+      console.log(state.auth.token)
+      // console.log(JSON.parse(window.localStorage.getItem('token')))
+      console.log('bbb')
+      return state.auth.token
     }
   },
   actions: {
@@ -67,6 +69,9 @@ export default {
         token: info.data.token
       }
       sessionStorage.setItem('token', info.data.token)
+      window.localStorage.setItem('token', JSON.stringify(info.data.token));
+      window.localStorage.setItem('userId', JSON.stringify(info.data.userId));
+      window.localStorage.setItem('isManage', JSON.stringify(info.data.isManage));
       commit(LOGIN_IN, temp)
     },
     async [REGISTER]({ commit }, data) {

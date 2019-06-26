@@ -14,7 +14,10 @@ router.beforeEach(({ path }, from, next) => {
     return next('/lfpRestaurant')
   }
   console.log('beforeEach')
-  const isLogin = Boolean(store.getters['AUTH_TOKEN'].auth.token)
+  console.log(store)
+  console.log(store.getters.AUTH_TOKEN)
+  console.log(store.state, store.state.Test, store.state.Test.auth, store.state.Test.auth.token)
+  const isLogin = Boolean(store.getters.AUTH_TOKEN) || Boolean(store.state.Test.auth.token)
   const URL = isLogin ? '/DESK/User/dishmenu' : '/lfpRestaurant'
   const isNext = (isLogin && URL !== path && path === '/lfpRestaurant') || (!isLogin && URL !== path)
   if (isNext) {
@@ -24,8 +27,10 @@ router.beforeEach(({ path }, from, next) => {
   }
 })
 
-new Vue({
+let instance = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app');
+
+console.log(instance)

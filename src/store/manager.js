@@ -4,6 +4,7 @@ export const MANAGER_MENU_LIST = 'MANAGER_MENU_LIST'
 export const EDIT_DISH = 'EDIT_DISH'
 export const DELETE_DISH = 'DELETE_DISH'
 export const ADD_DISH = 'ADD_DISH'
+export const ALL_CAR = 'ALL_CAR'
 
 export const USER_LIST = 'USER_LIST'
 export const EDIT_USER = 'EDIT_USER'
@@ -13,6 +14,12 @@ export const ALL_ORDER_LIST = 'ALL_ORDER_LIST'
 export const ORDER_DETAILS = 'ORDER_DETAILS'
 export const EDIT_ORDER = 'EDIT_ORDER'
 export const DELETE_ORDER = 'DELETE_ORDER'
+export const REFUND_SALES = 'REFUND_SALES'
+
+export const CAR_DETAILS = 'CAR_DETAILS'
+export const EDIT_CAR = 'EDIT_CAR'
+export const DELETE_CAR = 'DELETE_CAR'
+export const ADD_CAR = 'ADD_CAR'
 
 const MANAGER_MENU_LIST_HTTP = new manager.MENULIST()
 const ADD_DISH_HTTP = new manager.ADDDISH()
@@ -31,10 +38,14 @@ export default {
     },
     async [EDIT_DISH] ({commit}, data) {
       const EDIT_DISH_HTTP = new manager.EDITDISH({
-        id: data.id
+        id: data.commodityId
       })
       const info = await EDIT_DISH_HTTP.put('', {
-        name: data.name,
+        carBrand: data.carBrand,
+        carName: data.carName,
+        energy: data.energy,
+        displacement: data.displacement,
+        stock: data.stock,
         price: data.price
       })
       return {
@@ -50,8 +61,9 @@ export default {
     },
     async [ADD_DISH] ({commit}, data) {
       const info = await ADD_DISH_HTTP.put('',{
-        name: data.name,
-        price: data.price
+        carId: data.carId,
+        price: data.price,
+        stock: data.stock
       })
       return {
         data: info.data,
@@ -67,7 +79,7 @@ export default {
     },
     async [EDIT_USER] ({commit}, data) {
       const EDIT_USER_HTTP = new manager.EDITUSER({
-        username: data.username
+        userId: data.userId
       })
       const info = await EDIT_USER_HTTP.put('', {
         password: data.password,
@@ -80,7 +92,7 @@ export default {
     },
     async [DELETE_USER] ({commit}, data) {
       const DELETE_USER_HTTP = new manager.DELETEUSER({
-        username: data.username
+        userId: data.userId
       })
       await DELETE_USER_HTTP.delete()
     },
@@ -107,8 +119,8 @@ export default {
       })
       const info = await EDIT_ORDER_HTTP.put('', {
         orderStatus: data.orderStatus,
-        tableNumber: data.tableNumber,
-        money: data.money
+        totalPrice: data.totalPrice,
+        adress: data.adress
       })
       return {
         data: info.data,
@@ -120,6 +132,58 @@ export default {
         id: data.id
       })
       await DELETE_ORDER_HTTP.delete()
+    },
+    async [REFUND_SALES] ({commit}, data) {
+      const REFUND_SALES_HTTP = new manager.REFUNDSALES({
+        id: data.id
+      })
+      await REFUND_SALES_HTTP.put('', {
+        orderStatus: data.orderStatus,
+        refundInstructions: data.refundInstructions,
+        refundReply: data.refundReply
+      })
+    },
+    async [ALL_CAR] ({commit}, data) {
+      const ALL_CAR_HTTP = new manager.ALLCAR()
+      const info = await ALL_CAR_HTTP.get()
+      return {
+        data: info.data,
+        prompt: info.prompt
+      }
+    },
+    async [CAR_DETAILS] ({commit}, data) {
+      const CAR_DETAILS_HTTP = new manager.CARDETAILS({
+        id: data.id
+      })
+      const info = await CAR_DETAILS_HTTP.get()
+      return {
+        data: info.data,
+        prompt: info.prompt
+      }
+    },
+    async [EDIT_CAR] ({commit}, data) {
+      const EDIT_CAR_HTTP = new manager.EDITCAR({
+        id: data.carId
+      })
+      const info = await EDIT_CAR_HTTP.put('', data)
+      return {
+        data: info.data,
+        prompt: info.prompt
+      }
+    },
+    async [DELETE_CAR] ({commit}, data) {
+      const DELETE_CAR_HTTP = new manager.DELETECAR({
+        id: data.id
+      })
+      await DELETE_CAR_HTTP.delete()
+    },
+    async [ADD_CAR] ({commit}, data) {
+      const ADD_CAR_HTTP = new manager.ADDCAR()
+      const info = await ADD_CAR_HTTP.create(data)
+      return {
+        data: info.data,
+        prompt: info.prompt
+      }
     },
   }
 }

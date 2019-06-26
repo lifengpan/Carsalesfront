@@ -1,33 +1,82 @@
 <template>
   <div>
-    <p class="title">历史订单</p>
-    <hr>
+    <a-tabs @change="allOrder" v-model="activeKey">
+      <a-tab-pane tab="所有订单" key="1" @click="allOrder"></a-tab-pane>
+      <a-tab-pane tab="待付款" key="2" @click="obligation"></a-tab-pane>
+      <a-tab-pane tab="待发货" key="3"></a-tab-pane>
+      <a-tab-pane tab="待收货" key="4"></a-tab-pane>
+      <a-button slot="tabBarExtraContent">Extra Action</a-button>
+    </a-tabs>
     <a-spin tip="Waiting..." :spinning="waithing">
       <div class="card-container">
-        <div style="background: rgba(219, 219, 219, 0.28); padding:30px;"  class="card">
-          <a-card :title="order.createTime || '无'" :bordered="false" class="card1" v-for="(order, key) of orderList" :key="key">
-            <div class="dish-list">
-              <p v-if="order.dishDetails && order.dishDetails.length<=0" style="text-align: center; font-size: 18px; font-weight: 500;">无数据</p>
-              <p v-for="(dish,index) in order.dishDetails" :key="index">
-                <span>{{dish.name || '无'}}</span>
-                <span>{{dish.unitPrice || '无'}}/份</span>
-                <span>*{{dish.number || '0'}}</span>
+        <div style="background: rgba(219, 219, 219, 0.12); padding:30px;"  class="card">
+          <table class="bought-table-mod__table___3u4gN table-head-mod__table___17eFg">
+            <tbody>
+              <tr class="qqq">
+                <th style="margin-left: 90px;">宝贝</th>
+                <th style="margin-left: 145px;">单价</th>
+                <th style="margin-left: 110px;">数量</th>
+                <th style="margin-left: 100px;">商品操作</th>
+                <th style="margin-left: 30px;">实付款</th>
+                <th style="margin-right: 30px;">交易操作</th>
+              </tr>
+            </tbody>
+          </table>
+          <a-card :title="order.createTime || '无'" :bordered="true" class="card1" v-for="(order, key) of orderList" :key="key">
+            <div class="a-div-card">
+              <div class="dish-list">
+                <p v-if="order.orderDetails && order.orderDetails.length<=0" style="text-align: center; font-size: 18px; font-weight: 500;">无数据</p>
+                <p v-for="(dish,index) in order.orderDetails" :key="index">
+                  <span style="margin-left: 13%;">{{dish.carName || '无'}}</span>
+                  <span style="margin-left: 20%;">{{dish.price || '无'}}</span>
+                  <span style="margin-left: 16%;">{{dish.number || '0'}}</span>
+                </p>
+              </div>
+              <p class="total-price">
+                <a v-if="(order.orderStatus !== '未付款' && order.orderStatus !== '退款中' && order.orderStatus !== '已退款')" @click="showModal(order.orderId)">退款/退货</a>
+              </p>
+              <p class="total-price">
+                ￥{{order.totalPrice || 0}}
+              </p>
+              <p class="total-price" v-if="order.orderStatus==='待收货'">
+                <a-button style="display: flex;" @click="confirmGoods(order.orderId, '待收货')">
+                  确认收货
+                </a-button>
+              </p>
+              <p class="total-price" v-else>
+                {{order.orderStatus}}
               </p>
             </div>
-            <p class="total-price">
-              ￥{{total(order.dishDetails || [])}}
-            </p>
-            <p class="total-price">
-              {{order.orderStatus ? '已付款' : '待付款'}}
-            </p>
+            <div class="refund-instruction" v-if="order.orderStatus==='退款中'">
+              退款说明：{{order.refundInstructions}}
+            </div>
+            <div class="refund-instruction" v-if="order.orderStatus==='已退款' && order.orderStatus==='拒接退款'">
+              退款说明：{{order.refundInstructions}}
+              商家回复：{{order.refundReply}}
+            </div>
           </a-card>
         </div>
       </div>
     </a-spin>
+    <div>
+      <a-modal
+        v-model="visible"
+        title="退款/退货"
+        onOk="handleOk"
+      >
+        <template slot="footer">
+          <a-button key="back" @click="handleCancel">取消</a-button>
+          <a-button key="submit" type="primary" :loading="loading" @click="handleOk">
+            确认提交
+          </a-button>
+        </template>
+        <a-textarea v-model="refundExplain" placeholder="退款说明" :rows="4"/>
+      </a-modal>
+    </div>
   </div>
 </template>
 <script>
-import { USER_ORDER_LIST } from '@/store/user'
+import { USER_ORDER_LIST, CONFIRM_GOODS, USER_REFUND } from '@/store/user'
 import { mapActions } from 'vuex'
 
 export default {
@@ -35,25 +84,75 @@ export default {
     return {
       orderList: [],
       waithing: false,
-      signupStatus: false
+      signupStatus: false,
+      activeKey: 1,
+      visible: false,
+      loading: false,
+      refundExplain: '',
+      currentOrderId: '',
     }
   },
   methods: {
-    ...mapActions([USER_ORDER_LIST]),
-    total (arr) {
-      let sum = 0
-      for (let i = 0; i < arr.length; i++) {
-        sum = sum + parseInt(arr[i].unitPrice) * parseInt(arr[i].number)
+    ...mapActions([USER_ORDER_LIST, CONFIRM_GOODS, USER_REFUND]),
+    showModal(orderId) {
+      this.visible = true
+      this.currentOrderId = orderId
+      console.log(this.currentOrderId)
+    },
+    async handleOk(e) {
+      console.log(this.refundExplain)
+      try {
+        this.loading = true;
+        await this[USER_REFUND]({
+          orderId: this.currentOrderId,
+          refundInstructions: this.refundExplain
+        })
+        this.visible = false;
+      } catch (e) {
+        this.$message.error(e.message)
+      } finally {
+        this.loading = false;
       }
-      return sum;
+    },
+    handleCancel(e) {
+      console.log('Clicked cancel button');
+      this.visible = false
+    },
+    allOrder() {
+      console.log('allorder')
+      console.log(this.activeKey)
+    },
+    obligation () {
+      console.log('obligation')
+    },
+    tranformTime (Time) {
+      var tempTime = new Date(Time)
+      return `${tempTime.getFullYear()}-${(tempTime.getMonth()+1) < 10 ? '0'+(tempTime.getMonth()+1) : (tempTime.getMonth()+1)}-${(tempTime.getDate()) < 10 ? '0'+(tempTime.getDate()) : (tempTime.getDate())} 
+      ${(tempTime.getHours()) < 10 ? '0'+(tempTime.getHours()) : (tempTime.getHours())}:${(tempTime.getMinutes()) < 10 ? '0'+(tempTime.getMinutes()) : (tempTime.getMinutes())}:${(tempTime.getSeconds()) < 10 ? '0'+(tempTime.getSeconds()) : (tempTime.getSeconds())}`
     },
     async getOrderList () {
       try {
         const info = await this[USER_ORDER_LIST]({
-          username: 'lifengpan'
+          userId: 1
         })
         this.orderList = info.data
+        let length = this.orderList.length
+        let arr = this.orderList
+        for (let i=0;i<length;i++) {
+          arr[i].createTime = this.tranformTime(arr[i].createTime)
+        }
         this.$message.success('获取历史订单成功')
+      } catch (e) {
+        this.$message.error(e.message)
+      }
+    },
+    async confirmGoods (orderId) {
+      try {
+        await this[CONFIRM_GOODS]({
+          orderId: orderId
+        })
+        this.$message.success('收货成功')
+        await this.getOrderList()
       } catch (e) {
         this.$message.error(e.message)
       }
@@ -71,6 +170,29 @@ export default {
 .title {
   font-size: 25px;
 }
+.a-div-card {
+  display: flex;
+  width: 100%;
+}
+.ant-card-body {
+  display: block !important;
+}
+.user-order-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.qqq {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.refund-instruction {
+  width: 70%;
+  margin-top: 15px;
+  margin-left: 3%;
+  font-weight: 400;
+}
 .card {
   display: flex;
   flex-wrap: wrap;
@@ -80,7 +202,7 @@ export default {
   height: 100%;
 }
 .dish-list {
-  width: 80%;
+  width: 72%;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
   padding-top: 0;
@@ -88,8 +210,9 @@ export default {
   color: black;
 }
 .total-price {
-  width: 10%;
+  width: 12%;
   padding: 0;
+  padding-top: 10px;
   margin: 0;
   text-align: center;
   border-right: 1px solid #eee;
@@ -101,8 +224,8 @@ export default {
   width: 100%;
 }
 .card1 {
-  margin-left: 3%;
-  margin-top: 20px;
+  border: 1px solid #0000004a;
+  margin-top: 30px;
   width: 100%;
 }
 .ant-card-wider-padding .ant-card-body {
@@ -122,13 +245,26 @@ export default {
 .proportion {
   background-color: #33BAFF;
 }
-.card1 P {
-  padding-top: 20px;
+.dish-list P {
+  padding: 20px;
   margin-bottom: 0;
   border-bottom: 1px solid #eee;
 }
 .dish-list span {
-  margin-right: 30%;
-  margin-left: 5%;
+  width: 15%;
+  float: left;
+}
+.table-head-mod__table___17eFg {
+    margin: 10px 0;
+    background-color: #f5f5f5;
+    border: 1px solid #e8e8e8;
+    text-align: center;
+}
+.bought-table-mod__table___3u4gN {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: #3c3c3c;
+    table-layout: fixed;
 }
 </style>

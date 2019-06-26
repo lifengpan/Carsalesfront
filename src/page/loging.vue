@@ -57,7 +57,7 @@
               />
             </a-input>
           </a-form-item>
-          <a-form-item v-if="islogin">
+          <a-form-item v-if="islogin" class="user-login">
             <a-button
               html-type="submit"
               class="login-form-button"
@@ -66,7 +66,7 @@
               登录
             </a-button>
           </a-form-item>
-          <a-form-item v-if="!islogin">
+          <a-form-item v-if="!islogin" class="user-login">
             <a-button
               html-type="submit"
               :ghost="true"
@@ -192,7 +192,12 @@ export default {
   margin-top: 32px;
   width: 250px;
   color: white;
-  left: 0;
+}
+.user-login {
+  left: 8%;
+  width: 250px;
+  position: relative;
+  display: block;
 }
 #Login {
   height: 100%;
@@ -241,11 +246,13 @@ p {
   display: block;
 }
 
+
 .h22 {
   position: relative;
   margin-top: 20px;
   margin-bottom: 15px;
   text-decoration: none;
+  text-align: center;
   font-size: 40px;
   color: white;
 }

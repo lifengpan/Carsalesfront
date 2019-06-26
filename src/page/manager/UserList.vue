@@ -12,6 +12,7 @@
           <template v-else>{{text}}</template>
         </div>
       </template>
+      <a slot="userDetail" slot-scope="text, record" @click="userDetail(record)">详情</a>
       <template slot="operation" slot-scope="text, record">
         <div class='editable-row-operations'>
           <span v-if="record.editable">
@@ -41,20 +42,25 @@ import { USER_LIST, EDIT_USER, DELETE_USER, ADD_DISH } from '@/store/manager'
 import { mapActions } from 'vuex'
 
 const columns = [{
-  title: 'username',
+  title: '用户名',
   dataIndex: 'username',
   width: '25%',
   scopedSlots: { customRender: 'username' },
 }, {
-  title: 'password',
+  title: '密码',
   dataIndex: 'password',
   width: '25%',
   scopedSlots: { customRender: 'password' },
 }, {
-  title: 'isManage',
+  title: '是否管理员',
   dataIndex: 'isManage',
-  width: '25%',
+  width: '20%',
   scopedSlots: { customRender: 'isManage' },
+}, {
+  title: '用户详情',
+  dataIndex: 'userDetail',
+  width: '15%',
+  scopedSlots: { customRender: 'userDetail' },
 }, {
   title: 'operation',
   dataIndex: 'operation',
@@ -82,6 +88,13 @@ export default {
   },
   methods: {
     ...mapActions([USER_LIST, EDIT_USER, DELETE_USER, ADD_DISH]),
+    userDetail (record) {
+      this.$router.push({name: 'userInfo',
+        query: {
+          userId: record.userId
+        }
+      })
+    },
     handleChange (value, key, column) {
       const newData = [...this.data]
       const target = newData.filter(item => key === item.key)[0]
@@ -106,7 +119,7 @@ export default {
       try {
         let temp = this.tempData[key]
         await this[EDIT_USER]({
-          username: temp.username,
+          userId: temp.userId,
           password: temp.password,
           isManage: temp.isManage
         })
@@ -124,8 +137,9 @@ export default {
     },
     async onDelete (key) {
       try {
+        console.log(this.tempData[key].userId)
         await this[DELETE_USER]({
-          username: this.tempData[key].username
+          userId: this.tempData[key].userId
         })
         const data = [...this.data]
         this.data = data.filter(item => item.key !== key)

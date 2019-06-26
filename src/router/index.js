@@ -24,6 +24,10 @@ let routes = [
           name: 'dishmenu',
           component: resolve => require(['@/page/user/dishmenu'], resolve)
         }, {
+          path: 'userInfo',
+          name: 'userInfo',
+          component: resolve => require(['@/page/user/userInfo'], resolve)
+        }, {
           path: 'orderList',
           name: 'OrderList',
           component: resolve => require(['@/page/user/OrderList'], resolve)
@@ -54,10 +58,32 @@ let routes = [
             component: resolve => require(['@/page/manager/ManageOrder'], resolve)
           },
           {
+            path: 'manageCar',
+            name: 'ManageCar',
+            component: resolve => require(['@/page/manager/ManageCar'], resolve)
+          },
+          {
             path: 'orderDetails',
             name: 'OrderDetails',
             component: resolve => require(['@/page/manager/OrderDetails'], resolve)
+          },
+          {
+            path: 'manageCarDetails',
+            name: 'ManageCarDetails',
+            component: resolve => require(['@/page/manager/carDetails'], resolve)
           }
+        ]
+      },
+      {
+        path: 'car',
+        name: 'car',
+        component: resolve => require(['@/page/parent'], resolve),
+        children: [
+          {
+            path: 'carDetails',
+            name: 'carDetails',
+            component: resolve => require(['@/page/carDetails'], resolve)
+          },
         ]
       }
     ]
