@@ -27,7 +27,7 @@ export default {
       const info = await CREATE_ORDER_HTTP.create({
         userId: localStorage.getItem('userId'),
         dishList: data.dishList,
-        adress: '湖南文理学院第三实验楼'
+        adress: localStorage.getItem('address')
       })
       return {
         data: info.data,

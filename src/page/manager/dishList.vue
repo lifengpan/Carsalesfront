@@ -256,15 +256,7 @@ export default {
       console.log(key)
       try {
         let temp = this.tempData[key]
-        await this[EDIT_DISH]({
-          id: temp.commodityId,
-          carBrand: temp.carBrand,
-          carName: temp.carName,
-          energy: temp.energy,
-          displacement: temp.displacement,
-          stock: temp.stock,
-          price: temp.price
-        })
+        await this[EDIT_DISH](temp)
         const newData = [...this.data]
         const target = newData.filter(item => key === item.key)[0]
         if (target) {

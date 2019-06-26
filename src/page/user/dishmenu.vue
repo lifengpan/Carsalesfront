@@ -38,6 +38,7 @@
 <script>
 import { USER_GET_DISH, CREATE_ORDER, ORDER_ADD_DISH } from '@/store/user'
 import { mapActions } from 'vuex'
+import { setTimeout } from 'timers';
 
 const data = [];
 for (let i = 3; i < 30; i++) {
@@ -225,7 +226,7 @@ export default {
           dishList: dishList
         })
         this.$message.success('提交订单成功')
-        //this.$router.push({name: 'OrderList'})
+        this.$router.push({name: 'OrderList'})
       } catch (e) {
         console.log(e.message)
         this.$message.error(e.message)

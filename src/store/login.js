@@ -72,6 +72,7 @@ export default {
       window.localStorage.setItem('token', JSON.stringify(info.data.token));
       window.localStorage.setItem('userId', JSON.stringify(info.data.userId));
       window.localStorage.setItem('isManage', JSON.stringify(info.data.isManage));
+      window.localStorage.setItem('address', info.data.address)
       commit(LOGIN_IN, temp)
     },
     async [REGISTER]({ commit }, data) {

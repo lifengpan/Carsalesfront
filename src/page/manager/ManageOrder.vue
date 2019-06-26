@@ -2,7 +2,7 @@
   <div>
     <p class="title">全部订单</p>
     <hr>
-    <a-table :columns="columns" :dataSource="data" bordered :pagination="pagination">
+    <a-table :columns="columns" :dataSource="data" bordered :pagination="pagination" @change="handleChanges">
       <template v-for="col in ['orderStatus', 'adress', 'totalPrice']" :slot="col" slot-scope="text, record">
         <div :key="col">
           <a-input
@@ -60,56 +60,13 @@
 import { ALL_ORDER_LIST, EDIT_ORDER, DELETE_ORDER, REFUND_SALES } from '@/store/manager'
 import { mapActions } from 'vuex'
 
-const columns = [{
-  title: '序号',
-  dataIndex: 'key',
-  width: '5%',
-  scopedSlots: { customRender: 'key' },
-}, {
-  title: '创建用户',
-  dataIndex: 'username',
-  width: '15%',
-  scopedSlots: { customRender: 'username' },
-}, {
-  title: '创建时间',
-  dataIndex: 'createTime',
-  width: '15%',
-  scopedSlots: { customRender: 'createTime' },
-}, {
-  title: '收货地址',
-  dataIndex: 'adress',
-  width: '20%',
-  scopedSlots: { customRender: 'adress' },
-}, {
-  title: '订单状态',
-  dataIndex: 'orderStatus',
-  width: '10%',
-  scopedSlots: { customRender: 'orderStatus' },
-}, {
-  title: '总金额(万元)',
-  dataIndex: 'totalPrice',
-  width: '10%',
-  scopedSlots: { customRender: 'totalPrice' },
-}, {
-  title: '详情',
-  dataIndex: 'details',
-  scopedSlots: { customRender: 'details' },
-}, {
-  title: '编辑',
-  dataIndex: 'operation',
-  scopedSlots: { customRender: 'operation' },
-}, {
-  title: '交易操作',
-  dataIndex: 'action',
-  scopedSlots: { customRender: 'action' },
-}]
-
 export default {
   data () {
     return {
       data: [],
       tempData: [],
-      columns,
+      filteredInfo: null,
+      sortedInfo: null,
       currentRefund: '',
       currentReply: '',
       visible: false,
@@ -123,8 +80,74 @@ export default {
 			}
     }
   },
+  computed: {
+    columns () {
+      let { sortedInfo, filteredInfo } = this
+      sortedInfo = sortedInfo || {};
+      filteredInfo = filteredInfo || {};
+      const columns = [{
+        title: '序号',
+        dataIndex: 'key',
+        width: '5%',
+        scopedSlots: { customRender: 'key' }
+      }, {
+        title: '创建用户',
+        dataIndex: 'username',
+        scopedSlots: { customRender: 'username' },
+      }, {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        width: '15%',
+        scopedSlots: { customRender: 'createTime' }
+      }, {
+        title: '收货地址',
+        dataIndex: 'adress',
+        width: '20%',
+        scopedSlots: { customRender: 'adress' }
+      },{
+        title: '订单状态',
+        dataIndex: 'orderStatus',
+        width: '15%',
+        filters: [
+          { text: '已付款', value: '已付款' },
+          { text: '待收货', value: '待收货' },
+          { text: '已收货', value: '已收货' },
+          { text: '退款中', value: '退款中' },
+          { text: '已退款', value: '已退款' },
+          { text: '拒绝退款', value: '拒绝退款' }
+        ],
+        filteredValue: filteredInfo.orderStatus || null,
+        onFilter: (value, record) => record.orderStatus.includes(value),
+        sorter: (a, b) => a.orderStatus.length - b.orderStatus.length,
+        sortOrder: sortedInfo.columnKey === 'orderStatus' && sortedInfo.order,
+        scopedSlots: { customRender: 'orderStatus' }
+      },  {
+        title: '总金额(万元)',
+        dataIndex: 'totalPrice',
+        width: '10%',
+        scopedSlots: { customRender: 'totalPrice' }
+      }, {
+        title: '详情',
+        dataIndex: 'details',
+        scopedSlots: { customRender: 'details' }
+      }, {
+        title: '编辑',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' }
+      }, {
+        title: '交易操作',
+        dataIndex: 'action',
+        scopedSlots: { customRender: 'action' }
+      }];
+      return columns;
+    }
+  },
   methods: {
     ...mapActions([ALL_ORDER_LIST, EDIT_ORDER, DELETE_ORDER, REFUND_SALES]),
+    handleChanges (pagination, filters, sorter) {
+      this.filteredInfo = filters;
+      this.sortedInfo = sorter;
+    },
     showModal(record) {
       this.visible = true
       this.currentOrderId = record.orderId
@@ -142,6 +165,7 @@ export default {
         })
         this.visible = false;
         this.$message.success('操作成功')
+        await this.init()
       } catch (e) {
         this.$message.error(e.message)
       } finally {

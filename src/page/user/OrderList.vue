@@ -107,6 +107,7 @@ export default {
           orderId: this.currentOrderId,
           refundInstructions: this.refundExplain
         })
+        await this.getOrderList()
         this.visible = false;
       } catch (e) {
         this.$message.error(e.message)
