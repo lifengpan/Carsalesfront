@@ -28,7 +28,7 @@
     <div class="dialong-content">
       <span class="dialog-title-dish">车型</span><span class="dialog-title-price">价格</span>
       <p v-for="(value,key) in alreadyDish" :key="key">
-        <span class="dialog-content-name">{{value.carName}} * {{value.number}}</span><span class="dialog-content-price">{{value.price}}(万元)</span>
+        <span class="dialog-content-name">{{value.carName}} * {{value.number}}</span><span class="dialog-content-price">{{value.price * value.number}}(万元)</span>
       </p>
     </div>
     <a-button type="primary" class="dialog-footer-button" @click="createOrder">提交订单</a-button>
